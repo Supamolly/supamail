@@ -1,0 +1,2 @@
+# supamail
+Supamolly email dispatcher
