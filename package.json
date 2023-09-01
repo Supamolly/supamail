@@ -1,0 +1,33 @@
+{
+  "name": "supamail",
+  "version": "1.0.0",
+  "description": "Supamolly email dispatcher",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Supamolly/supamail.git"
+  },
+  "author": "Supamolly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Supamolly/supamail/issues"
+  },
+  "homepage": "https://github.com/Supamolly/supamail#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "emailjs": "^4.0.2",
+    "imap": "^0.8.19",
+    "mailparser": "^3.6.5",
+    "mariadb": "^3.2.0",
+    "mysql2": "^3.6.0",
+    "sequelize": "^6.32.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.48.0"
+  }
+}
