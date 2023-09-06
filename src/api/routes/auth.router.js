@@ -35,7 +35,7 @@ router.post("/register", async(req, res) => {
         const existingUser = await EmailAdmin.findOne({where: {name: username}})
         if (existingUser) {
             res.status(409)
-            logger.error(`Tried to create duplicate user ${existingUser}`, {module: "express.api.auth"})
+            logger.error(`Tried to create duplicate user ${existingUser.name}`, {module: "express.api.auth"})
             return res.json({success: true, data: {errors: ["Username already exist"]}})
         }
 
