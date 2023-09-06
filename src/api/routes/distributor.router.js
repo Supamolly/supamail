@@ -17,7 +17,6 @@ router.post("/", verifyToken, async(req, res) => {
     try {
         const {name, email, distributors} = req.body
         const existingUser = await EmailUser.findOne({where: {email: email}})
-        console.log("bla")
         if (existingUser) {
             res.status(409)
             logger.error(`Tried to add ${existingUser.email} to distributor, but it already exists`, {module: "express.api.distributor"})
@@ -32,11 +31,11 @@ router.post("/", verifyToken, async(req, res) => {
             tech: distributors.tech === true,
             supa: distributors.supa === true,
             hoerliste: distributors.hoerliste === true,
+            it: distributors.it === true,
         })
 
         res.json({success: true, data: user.toJSON()})
     } catch (err) {
-        console.log(err)
         onError(res, "Internal Server Error", err.stack)
     }
 })
@@ -53,6 +52,7 @@ router.put("/", verifyToken, async(req, res) => {
             tech: distributors.tech ?? user.tech,
             supa: distributors.supa ?? user.supa,
             hoerliste: distributors.hoerliste ?? user.hoerliste,
+            it: distributors.it ?? user.it,
         }, {where: {email: email}})
 
         res.json({success: true})

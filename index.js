@@ -41,7 +41,7 @@ async function run() {
     })
 
     logger.info("Starting SupaMail")
-    const distributors = ["supa", "ton", "licht", "hoerliste", "tech"]
+    const distributors = ["supa", "ton", "licht", "hoerliste", "tech", "it"]
     for (const distributor of distributors) {
         let mailer = null
         try {

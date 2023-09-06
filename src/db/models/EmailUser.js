@@ -45,6 +45,10 @@ const EmailUser = sequelize.define("EmailUser", {
     fusion: {
         type: DataTypes.BOOLEAN,
     },
+
+    it: {
+        type: DataTypes.BOOLEAN,
+    },
 }, {tableName: "supamolly_vert"})
 
 export default EmailUser
