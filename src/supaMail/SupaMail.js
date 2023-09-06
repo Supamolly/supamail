@@ -14,32 +14,37 @@ class SupaMail {
             password: process.env[`${distributorType.toUpperCase()}_PASSWORD`],
         }
 
+        if (!this.connectionDetails.user || !this.connectionDetails.password) {
+            throw new Error("No authentication details available")
+        }
+
         this.distributorType = distributorType
         this.sender = new SupaSender(this.connectionDetails)
         this.receiver = new SupaReceiver(this.connectionDetails)
     }
 
     async runDistributor() {
-        logger.debug("Checking for new emails")
+        logger.debug("Checking for new emails", {module: `supamail.${this.distributorType}`})
         //const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
         const userEmails = ["max.dahl1@gmail.com", "max@maxdahl.de", "daagur@daagur.de"]
         const newMessageIds = await this.receiver.getMailIds()
-        logger.debug(`Found ${newMessageIds.length}`)
+        logger.debug(`Found ${newMessageIds.length}`, {module: `supamail.${this.distributorType}`})
         const sendMessages = []
         for (const id of newMessageIds) {
             try {
                 const message = await this.receiver.fetchMessage(id)
-                if (!userEmails.includes(message.fromAddress)) {
-                    logger.info(`Found message from sender ${message.fromAddress}, who is not in the mailing list`)
+                const isAllowedToSend = userEmails.includes(message.fromAddress) || message.fromAddress.endsWith("@supamolly.de")
+                if (!isAllowedToSend) {
+                    logger.info(`Found message from sender ${message.fromAddress}, who is not in the mailing list`, {module: `supamail.${this.distributorType}`})
                     continue
                 }
 
                 for (const email of userEmails) {
-                    logger.info(`Sending ${message.subject} to ${email}`)
+                    logger.info(`Sending ${message.subject} to ${email}`, {module: `supamail.${this.distributorType}`})
                     sendMessages.push(this.sender.sendMessage({...message, to: email, from: this.connectionDetails.user}))
                 }
             } catch (err) {
-                logger.error(err.message)
+                logger.error(err.message, {module: `supamail.${this.distributorType}`})
             }
         }
 

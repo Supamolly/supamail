@@ -43,7 +43,14 @@ async function run() {
     logger.info("Starting SupaMail")
     const distributors = ["supa", "ton", "licht", "hoerliste", "tech"]
     for (const distributor of distributors) {
-        const mailer = new SupaMail(distributor)
+        let mailer = null
+        try {
+            mailer = new SupaMail(distributor)
+        } catch (err) {
+            logger.error(`Could not initialize ${distributor} distributor due to ${err.stack}`)
+            continue
+        }
+
         setInterval(async() => {
             try {
                 await mailer.runDistributor()
