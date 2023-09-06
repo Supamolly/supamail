@@ -25,8 +25,7 @@ class SupaMail {
 
     async runDistributor() {
         logger.debug("Checking for new emails", {module: `supamail.${this.distributorType}`})
-        //const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
-        const userEmails = ["max.dahl1@gmail.com", "max@maxdahl.de", "daagur@daagur.de"]
+        const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
         const newMessageIds = await this.receiver.getMailIds()
         logger.debug(`Found ${newMessageIds.length}`, {module: `supamail.${this.distributorType}`})
         const sendMessages = []
