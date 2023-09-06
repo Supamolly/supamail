@@ -17,7 +17,7 @@ router.post("/", verifyToken, async(req, res) => {
     try {
         const {name, email, distributors} = req.body
         const existingUser = await EmailUser.findOne({where: {email: email}})
-
+        console.log("bla")
         if (existingUser) {
             res.status(409)
             logger.error(`Tried to add ${existingUser.email} to distributor, but it already exists`, {module: "express.api.distributor"})
@@ -36,27 +36,26 @@ router.post("/", verifyToken, async(req, res) => {
 
         res.json({success: true, data: user.toJSON()})
     } catch (err) {
+        console.log(err)
         onError(res, "Internal Server Error", err.stack)
     }
 })
 
 router.put("/", verifyToken, async(req, res) => {
     try {
-        const {name, email, distributors} = req.body
+        const {email, distributors} = req.body
         const user = EmailUser.findOne({where: {email: email}})
         if (!user) return res.status(404).json({success: false, data: {errors: [`Email ${email} not in distributor list`]}})
 
-        const updatedUser = EmailUser.update({
-            name: name,
-            email: email,
-            ton: distributors.ton === true,
-            licht: distributors.licht === true,
-            tech: distributors.tech === true,
-            supa: distributors.supa === true,
-            hoerliste: distributors.hoerliste === true,
-        })
+        await EmailUser.update({
+            ton: distributors.ton ?? user.ton,
+            licht: distributors.licht ?? user.licht,
+            tech: distributors.tech ?? user.tech,
+            supa: distributors.supa ?? user.supa,
+            hoerliste: distributors.hoerliste ?? user.hoerliste,
+        }, {where: {email: email}})
 
-        res.json({success: true, data: updatedUser.toJSON()})
+        res.json({success: true})
     } catch (err) {
         onError(res, "Internal Server Error", err.stack)
     }
@@ -69,6 +68,7 @@ router.delete("/", verifyToken, async(req, res) => {
         if (!user) return res.status(404).json({success: false, data: {errors: [`Email ${email} not in distributor list`]}})
 
         await EmailUser.destroy({where: {email: email}})
+        res.json({success: true})
     } catch (err) {
         onError(res, "Internal Server Error", err.stack)
     }
