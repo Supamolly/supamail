@@ -15,7 +15,7 @@ class SupaReceiver {
         const useTls = connection.tls ?? true
         const port = useTls === true ? 993 : 143
 
-        this.imap = new Imap({...connection, port, tls: useTls})
+        this.imap = new Imap({...connection, port: port, tls: useTls})
         this.imap.once("end", () => { this.connected = false })
 
         this.inbox = inbox

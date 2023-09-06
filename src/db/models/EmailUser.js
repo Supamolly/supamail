@@ -1,7 +1,14 @@
 import {DataTypes} from "sequelize"
-import sequelize from "../db.js"
+import sequelize from "../sequelize.js"
 
 const EmailUser = sequelize.define("EmailUser", {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false,
+    },
+
     name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -10,6 +17,9 @@ const EmailUser = sequelize.define("EmailUser", {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+            isEmail: true,
+        },
     },
 
     ton: {
