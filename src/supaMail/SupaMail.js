@@ -1,6 +1,7 @@
 import SupaReceiver from "./SupaReceiver.js"
 import SupaSender from "./SupaSender.js"
 import EmailUser from "../db/models/EmailUser.js"
+import logger from "../util/logger.js"
 
 class SupaMail {
     /**
@@ -19,21 +20,26 @@ class SupaMail {
     }
 
     async runDistributor() {
-        console.log("Checking for new eMails")
-        const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
-        // const userEmails = ["max.dahl1@gmail.com", "max@maxdahl.de", "daagur@daagur.de"]
+        logger.debug("Checking for new emails")
+        //const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
+        const userEmails = ["max.dahl1@gmail.com", "max@maxdahl.de", "daagur@daagur.de"]
         const newMessageIds = await this.receiver.getMailIds()
-        console.log(`Found ${newMessageIds.length}`)
+        logger.debug(`Found ${newMessageIds.length}`)
         const sendMessages = []
         for (const id of newMessageIds) {
             try {
                 const message = await this.receiver.fetchMessage(id)
+                if (!userEmails.includes(message.fromAddress)) {
+                    logger.info(`Found message from sender ${message.fromAddress}, who is not in the mailing list`)
+                    continue
+                }
+
                 for (const email of userEmails) {
-                    console.log(`Sending ${message.subject} to ${email}`)
-                    const res = await this.sender.sendMessage({...message, to: email, from: this.connectionDetails.user})
+                    logger.info(`Sending ${message.subject} to ${email}`)
+                    sendMessages.push(this.sender.sendMessage({...message, to: email, from: this.connectionDetails.user}))
                 }
             } catch (err) {
-                console.error(err.message)
+                logger.error(err.message)
             }
         }
 
@@ -64,7 +70,9 @@ export default SupaMail
  * @typedef {Object} EmailMessage
  * @property {number} messageId ID of the message in the mailbox.
  * @property {string} inReplyTo is the In-Reply-To value.
- * @property {string} from Mail address of the sender.
+ * @property {string} from Full sender information with name and address as text.
+ * @property {string} fromName Name of the sender.
+ * @property {string} fromAddress Address of the sender.
  * @property {[string]} to Mail address(es) of the recipient(s).
  * @property {number} date Timestamp of the date and time the message was sent.
  * @property {string} subject Subject of the message.

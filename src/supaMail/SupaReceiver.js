@@ -89,6 +89,8 @@ class SupaReceiver {
                             html: parsed.html,
                             to: parsed.to.text,
                             from: parsed.from.text,
+                            fromName: parsed.from.value[0].name,
+                            fromAddress: parsed.from.value[0].address,
                             attachments: parsed.attachments,
                         }
                         resolve(message)
@@ -106,12 +108,10 @@ class SupaReceiver {
      */
     async getMailIds(criteria = ["UNSEEN"]) {
         await this.connectAndOpenInbox()
-        console.log(this.connected)
 
         return new Promise((resolve, reject) => {
             this.imap.search(criteria, (err, results) => {
                 if (err) return reject(err)
-                console.log(results)
                 resolve(results)
             })
         })
