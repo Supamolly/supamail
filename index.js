@@ -24,10 +24,6 @@ async function run() {
     logger.info("Syncing database")
     await db.sequelize.sync()
 
-    logger.info("Starting SupaMail")
-
-    const distributors = ["supa", "ton", "licht", "hoerliste", "tech"]
-
     process.on("unhandledRejection", err => {
         if (err instanceof Error) {
             logger.error(`Detected unhandled promise rejection: ${err.stack}`)
@@ -44,6 +40,8 @@ async function run() {
         }
     })
 
+    logger.info("Starting SupaMail")
+    const distributors = ["supa", "ton", "licht", "hoerliste", "tech"]
     for (const distributor of distributors) {
         const mailer = new SupaMail(distributor)
         setInterval(async() => {
