@@ -1,5 +1,5 @@
 import "dotenv/config"
-import SupaMail from "./supaMail/SupaMail.js"
+import SupaMail from "./src/supaMail/SupaMail.js"
 
 async function run() {
     const distributors = ["supa"]
