@@ -25,14 +25,37 @@ async function run() {
     await db.sequelize.sync()
 
     logger.info("Starting SupaMail")
-    const distributors = ["supa"]
-    const promises = []
+
+    const distributors = ["supa", "ton", "licht", "hoerliste", "tech"]
+
+    process.on("unhandledRejection", err => {
+        if (err instanceof Error) {
+            logger.error(`Detected unhandled promise rejection: ${err.stack}`)
+        } else {
+            logger.error(`Detected unhandled promise rejection with non-Error value: ${err}`)
+        }
+    })
+
+    process.on("uncaughtException", (err, origin) => {
+        if (err instanceof Error) {
+            logger.error(`Detected ${origin} ${err.stack}`)
+        } else {
+            logger.error(`Detected $\{origin} with non-Error value: ${err}`)
+        }
+    })
+
     for (const distributor of distributors) {
         const mailer = new SupaMail(distributor)
         setInterval(async() => {
-            await mailer.runDistributor()
+            try {
+                await mailer.runDistributor()
+            } catch (err) {
+                logger.error(`Unhandled Error on runDistributor() ${err.stack}`)
+            }
         }, 5000)
     }
 }
 
-run()
+run().catch(err => {
+    logger.error(`Unhandled Error on main thread: ${err.stack}`)
+})
