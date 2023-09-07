@@ -2,7 +2,6 @@ import "dotenv/config"
 import SupaMail from "./src/supaMail/SupaMail.js"
 import logger from "./src/util/logger.js"
 import express from "express"
-import cors from "cors"
 import routes from "./src/api/routes/index.js"
 import db from "./src/db/index.js"
 

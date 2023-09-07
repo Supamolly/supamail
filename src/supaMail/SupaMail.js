@@ -32,7 +32,7 @@ class SupaMail {
         for (const id of newMessageIds) {
             try {
                 const message = await this.receiver.fetchMessage(id)
-                const isAllowedToSend = userEmails.includes(message.fromAddress) || message.fromAddress.endsWith("@supamolly.de")
+                const isAllowedToSend = message.fromAddress.endsWith("@supamolly.de") || (await EmailUser.findOne({where: {email: message.fromAddress}}))
                 if (!isAllowedToSend) {
                     logger.info(`Found message from sender ${message.fromAddress}, who is not in the mailing list`, {module: `supamail.${this.distributorType}`})
                     continue

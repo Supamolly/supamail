@@ -34,6 +34,7 @@ router.post("/", verifyToken, async(req, res) => {
             it: distributors.it === true,
         })
 
+        logger.info(`${req.user.name} added ${email} to ${JSON.stringify(distributors)}`)
         res.json({success: true, data: user.toJSON()})
     } catch (err) {
         onError(res, "Internal Server Error", err.stack)
@@ -55,6 +56,7 @@ router.put("/", verifyToken, async(req, res) => {
             it: distributors.it ?? user.it,
         }, {where: {email: email}})
 
+        logger.info(`${req.user.name} updated ${email} to be subscribed to ${JSON.stringify(distributors)}`)
         res.json({success: true})
     } catch (err) {
         onError(res, "Internal Server Error", err.stack)
@@ -64,10 +66,11 @@ router.put("/", verifyToken, async(req, res) => {
 router.delete("/", verifyToken, async(req, res) => {
     try {
         const {email} = req.body
-        const user = EmailUser.findOne({where: {email: email}})
+        const user = await EmailUser.findOne({where: {email: email}})
         if (!user) return res.status(404).json({success: false, data: {errors: [`Email ${email} not in distributor list`]}})
 
         await EmailUser.destroy({where: {email: email}})
+        logger.info(`${req.user.name} deleted ${email}`, {module: "express.api.distributor"})
         res.json({success: true})
     } catch (err) {
         onError(res, "Internal Server Error", err.stack)
