@@ -1,7 +1,9 @@
 import "dotenv/config"
+import express from "express"
+import {setIntervalAsync} from "set-interval-async"
+
 import SupaMail from "./src/supaMail/SupaMail.js"
 import logger from "./src/util/logger.js"
-import express from "express"
 import routes from "./src/api/routes/index.js"
 import db from "./src/db/index.js"
 
@@ -50,7 +52,7 @@ async function run() {
             continue
         }
 
-        setInterval(async() => {
+        setIntervalAsync(async() => {
             try {
                 await mailer.runDistributor()
             } catch (err) {
