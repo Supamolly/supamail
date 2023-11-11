@@ -1,8 +1,8 @@
-import logger from "../util/logger"
+import logger from "../util/logger.js"
 import {Sequelize} from "sequelize"
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    dialect: "mysql",
+    dialect: "mariadb",
     host: process.env.DB_HOST,
     logging: logger.debug.bind(logger),
 })

@@ -1,4 +1,6 @@
-import "dotenv/config"
+import dotEnv from "dotenv-defaults"
+dotEnv.config()
+
 import express from "express"
 import {setIntervalAsync} from "set-interval-async"
 
