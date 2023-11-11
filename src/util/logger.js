@@ -3,6 +3,7 @@ import DailyRotateFile from "winston-daily-rotate-file"
 
 const {format} = winston
 const {combine, timestamp} = format
+const logsDir = process.env.LOGS_DIR || "logs"
 
 function filterLogLevel(level) {
     return winston.format(info => {
@@ -30,7 +31,7 @@ function createLogTransport(level) {
     return new DailyRotateFile({
         filename: `${level}_%DATE%`,
         extension: ".log",
-        dirname: "logs",
+        dirname: logsDir,
         datePattern: "YYYY-MM-DD",
         maxFiles: 7,
         createSymlink: true,
@@ -49,6 +50,13 @@ const logger = winston.createLogger({
         winston.format.json(),
     ),
     transports: ["error", "info", "debug"].map(level => createLogTransport(level)),
+    exceptionHandlers: [
+        new winston.transports.File({
+            filename: "exceptions.log",
+            dirname: logsDir,
+        }),
+    ],
+    exitOnError: false,
 })
 
 export default logger
