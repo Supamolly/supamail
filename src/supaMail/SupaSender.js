@@ -1,4 +1,4 @@
-import {SMTPClient} from "emailjs"
+const emailjs = require("emailjs")
 
 class SupaSender {
     /**
@@ -52,4 +52,4 @@ class SupaSender {
     }
 }
 
-export default SupaSender
+module.exports = SupaSender

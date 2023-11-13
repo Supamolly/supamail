@@ -1,7 +1,7 @@
-import SupaReceiver from "./SupaReceiver.js"
-import SupaSender from "./SupaSender.js"
-import EmailUser from "../db/models/EmailUser.js"
-import logger from "../util/logger.js"
+const SupaReceiver = require("./SupaReceiver.js")
+const SupaSender = require("./SupaSender.js")
+const EmailUser = require("../db/models/EmailUser.js")
+const logger = require("../util/logger.js")
 
 class SupaMail {
     /**
@@ -55,7 +55,7 @@ class SupaMail {
     }
 }
 
-export default SupaMail
+module.exports = SupaMail
 /**
  * @typedef {Object} EmailAttachment
  * @property {string} filename (if available) file name of the attachment.

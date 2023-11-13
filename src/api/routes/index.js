@@ -1,7 +1,7 @@
-import auth from "./auth.router.js"
-import distributor from "./distributor.router.js"
+const auth = require("./auth.router.js")
+const distributor = require("./distributor.router.js")
 
-export default {
+module.exports = {
     auth,
     distributor,
 }

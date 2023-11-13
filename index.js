@@ -1,13 +1,13 @@
-import dotEnv from "dotenv-defaults"
+const dotEnv = require("dotenv-defaults")
 dotEnv.config()
 
-import express from "express"
-import {setIntervalAsync} from "set-interval-async"
+const express = require("express")
+const {setIntervalAsync} = require("set-interval-async")
 
-import SupaMail from "./src/supaMail/SupaMail.js"
-import logger from "./src/util/logger.js"
-import routes from "./src/api/routes/index.js"
-import db from "./src/db/index.js"
+const SupaMail = require("./src/supaMail/SupaMail.js")
+const logger = require("./src/util/logger.js")
+const routes = require("./src/api/routes/index.js")
+const db = require("./src/db/index.js")
 
 global.debug = process.argv.includes("debug")
 

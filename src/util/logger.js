@@ -1,5 +1,5 @@
-import winston from "winston"
-import DailyRotateFile from "winston-daily-rotate-file"
+const winston = require("winston")
+const DailyRotateFile = require("winston-daily-rotate-file")
 
 const {format} = winston
 const {combine, timestamp} = format
@@ -27,6 +27,8 @@ function formatLogEntry(level) {
 
 function createLogTransport(level) {
     const logToConsole = process.env.LOG_TO_CONSOLE === "true"
+    console.log(process.env.LOG_TO_CONSOLE)
+    console.log(process.env.LICHT_EMAIL)
     if (logToConsole) return new winston.transports.Console({level: level, format: formatLogEntry(level)})
     return new DailyRotateFile({
         filename: `${level}_%DATE%`,
@@ -59,4 +61,4 @@ const logger = winston.createLogger({
     exitOnError: false,
 })
 
-export default logger
+module.exports = logger

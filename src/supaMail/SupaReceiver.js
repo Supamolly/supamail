@@ -1,5 +1,5 @@
-import Imap from "imap"
-import {simpleParser} from "mailparser"
+const Imap = require("imap")
+const {simpleParser} = require("mailparser")
 
 class SupaReceiver {
     /**
@@ -134,4 +134,4 @@ class SupaReceiver {
     }
 }
 
-export default SupaReceiver
+module.exports = SupaReceiver

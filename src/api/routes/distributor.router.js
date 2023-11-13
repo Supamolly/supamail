@@ -1,7 +1,7 @@
-import express from "express"
-import verifyToken from "../middleware/auth.middleware.js"
-import EmailUser from "../../db/models/EmailUser.js"
-import logger from "../../util/logger.js"
+const express = require("express")
+const verifyToken = require("../middleware/auth.middleware.js")
+const EmailUser = require("../../db/models/EmailUser.js")
+const logger = require("../../util/logger.js")
 const router = express.Router()
 
 function onError(res, msg, debugMsg) {
@@ -76,4 +76,4 @@ router.delete("/", verifyToken, async(req, res) => {
         onError(res, "Internal Server Error", err.stack)
     }
 })
-export default router
+module.exports = router

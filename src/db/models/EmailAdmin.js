@@ -1,6 +1,6 @@
-import {DataTypes} from "sequelize"
-import sequelize from "../sequelize.js"
-import bcrypt from "bcrypt"
+const {DataTypes} = require("sequelize")
+const sequelize = require("../sequelize.js")
+const bcrypt = require("bcrypt")
 
 const EmailAdmin = sequelize.define("EmailAdmin", {
     id: {
@@ -32,4 +32,4 @@ EmailAdmin.beforeCreate(user => bcrypt.hash(user.password, 10).then(hash => {
     user.password = hash
 }))
 
-export default EmailAdmin
+module.exports = EmailAdmin

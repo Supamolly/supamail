@@ -1,9 +1,9 @@
-import express from "express"
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
-import EmailAdmin from "../../db/models/EmailAdmin.js"
-import logger from "../../util/logger.js"
-import verifyToken from "../middleware/auth.middleware.js"
+const express = require("express")
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
+const EmailAdmin = require("../../db/models/EmailAdmin.js")
+const logger = require("../../util/logger.js")
+const verifyToken = require("../middleware/auth.middleware.js")
 
 const router = express.Router()
 
@@ -75,4 +75,4 @@ router.put("/op", verifyToken, async(req, res) => {
     }
 })
 
-export default router
+module.exports = router

@@ -1,5 +1,5 @@
-import {DataTypes} from "sequelize"
-import sequelize from "../sequelize.js"
+const {DataTypes} = require("sequelize")
+const sequelize = require("../sequelize.js")
 
 const EmailUser = sequelize.define("EmailUser", {
     id: {
@@ -51,4 +51,4 @@ const EmailUser = sequelize.define("EmailUser", {
     },
 }, {tableName: "supamolly_vert"})
 
-export default EmailUser
+module.exports = EmailUser

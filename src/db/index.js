@@ -1,9 +1,9 @@
-import EmailUser from "./models/EmailUser.js"
-import EmailAdmin from "./models/EmailAdmin.js"
+const EmailUser = require("./models/EmailUser.js")
+const EmailAdmin = require("./models/EmailAdmin.js")
 
-import sequelize from "./sequelize.js"
+const sequelize = require("./sequelize.js")
 
-export default {
+module.exports = {
     EmailAdmin,
     EmailUser,
     sequelize,

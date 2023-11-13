@@ -1,6 +1,6 @@
-import jwt from "jsonwebtoken"
-import EmailAdmin from "../../db/models/EmailAdmin.js"
-import logger from "../../util/logger.js"
+const jwt = require("jsonwebtoken")
+const EmailAdmin = require("../../db/models/EmailAdmin")
+const logger = require("../../util/logger")
 
 async function verifyToken(req, res, next) {
     const failVerification = async debugMsg => {
@@ -36,4 +36,4 @@ async function verifyToken(req, res, next) {
     }
 }
 
-export default verifyToken
+module.exports = verifyToken
