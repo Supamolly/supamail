@@ -30,6 +30,8 @@ class SupaSender {
      * @returns {Promise<void>}
      */
     async sendMessage(message) {
+        message.from = `"${message.originalAuthor}" <${message.from}>`
+
         if (message.text) {
             message.text += "\n\n"
             message.text += "--------------------------------\n"
