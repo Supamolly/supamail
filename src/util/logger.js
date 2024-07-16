@@ -27,8 +27,6 @@ function formatLogEntry(level) {
 
 function createLogTransport(level) {
     const logToConsole = process.env.LOG_TO_CONSOLE === "true"
-    console.log(process.env.LOG_TO_CONSOLE)
-    console.log(process.env.LICHT_EMAIL)
     if (logToConsole) return new winston.transports.Console({level: level, format: formatLogEntry(level)})
     return new DailyRotateFile({
         filename: `${level}_%DATE%`,

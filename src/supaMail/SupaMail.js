@@ -25,14 +25,19 @@ class SupaMail {
 
     async runDistributor() {
         logger.debug("Checking for new emails", {module: `supamail.${this.distributorType}`})
+
         const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
         const newMessageIds = await this.receiver.getMailIds()
+
         logger.debug(`Found ${newMessageIds.length}`, {module: `supamail.${this.distributorType}`})
-        const sendMessages = []
+
+        const sentMessages = []
         for (const id of newMessageIds) {
             try {
                 const message = await this.receiver.fetchMessage(id)
-                const isAllowedToSend = message.fromAddress.endsWith("@supamolly.de") || (await EmailUser.findOne({where: {email: message.fromAddress}}))
+                const originalAuthor = await EmailUser.findOne({where: {email: message.fromAddress}})
+                const isAllowedToSend = message.fromAddress.endsWith("@supamolly.de") || originalAuthor !== null
+
                 if (!isAllowedToSend) {
                     logger.info(`Found message from sender ${message.fromAddress}, who is not in the mailing list`, {module: `supamail.${this.distributorType}`})
                     continue
@@ -40,14 +45,14 @@ class SupaMail {
 
                 for (const email of userEmails) {
                     logger.info(`Sending ${message.subject} to ${email}`, {module: `supamail.${this.distributorType}`})
-                    sendMessages.push(this.sender.sendMessage({...message, to: email, from: this.connectionDetails.user}))
+                    sentMessages.push(this.sender.sendMessage({...message, to: email, from: this.connectionDetails.user, originalAuthor: originalAuthor.name}))
                 }
             } catch (err) {
                 logger.error(err.message, {module: `supamail.${this.distributorType}`})
             }
         }
 
-        await Promise.all(sendMessages)
+        await Promise.all(sentMessages)
 
         for (const id of newMessageIds) {
             await this.receiver.addFlags(id, ["Seen"])
@@ -83,4 +88,5 @@ module.exports = SupaMail
  * @property {string} text Text of the message.
  * @property {string} html HTML body of the message.
  * @property {[EmailAttachment]} attachments Array of attachments.
+ * @property {string} originalAuthor Name of the original author.
  */

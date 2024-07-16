@@ -1,4 +1,4 @@
-const emailjs = require("emailjs")
+const nodemailer = require("nodemailer")
 
 class SupaSender {
     /**
@@ -13,11 +13,14 @@ class SupaSender {
     constructor(connection) {
         const useTls = connection.tls ?? true
 
-        this.client = new SMTPClient({
-            user: connection.user,
-            password: connection.password,
+        this.client = nodemailer.createTransport({
             host: connection.host,
-            ssl: useTls,
+            port: connection.port ?? 465,
+            secure: useTls,
+            auth: {
+                user: connection.user,
+                pass: connection.password,
+            },
         })
     }
 
@@ -27,28 +30,22 @@ class SupaSender {
      * @returns {Promise<void>}
      */
     async sendMessage(message) {
-        const msg = {
-            text: message.text,
-            to: message.to,
-            from: message.from,
-            subject: message.subject,
-            attachment: [],
+        if (message.text) {
+            message.text += "\n\n"
+            message.text += "--------------------------------\n"
+            message.text += `This message was sent by ${message.originalAuthor} via SupaMail`
         }
 
-        if (message.bcc) msg.bcc = message.bcc
-        if (message.inReplyTo) msg["In-Reply-To"] = message.inReplyTo
-        if (message.html) msg.attachment.push({data: message.html, alternative: true})
+        if (message.html) {
+            message.html = message.html.replace("</body>", "")
+            message.html = message.html.replace("</html>", "")
+            message.html += "<br><br>"
+            message.html += "--------------------------------<br>"
+            message.html += `This message was sent by ${message.originalAuthor} via SupaMail`
+            message.html += "</body></html>"
+        }
 
-        message.attachments.forEach(attachment => {
-            msg.attachment.push({
-                data: attachment.content,
-                type: attachment.contentType,
-                headers: attachment.headers,
-                name: attachment.filename,
-            })
-        })
-
-        return this.client.sendAsync(msg)
+        return this.client.sendMail(message)
     }
 }
 
