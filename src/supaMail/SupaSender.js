@@ -31,6 +31,7 @@ class SupaSender {
      */
     async sendMessage(message) {
         message.from = `"${message.originalAuthor}" <${message.from}>`
+        message.date = new Date(Date.now())
 
         if (message.text) {
             message.text += "\n\n"
