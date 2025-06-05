@@ -49,6 +49,10 @@ const EmailUser = sequelize.define("EmailUser", {
     it: {
         type: DataTypes.BOOLEAN,
     },
+
+    test: {
+        type: DataTypes.BOOLEAN,
+    }
 }, {tableName: "supamolly_vert"})
 
 module.exports = EmailUser
