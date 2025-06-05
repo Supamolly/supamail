@@ -24,6 +24,9 @@ class SupaMail {
     }
 
     async runDistributor() {
+        logger.debug("Verifying SMTP Connection")
+        await this.sender.verifyConnection()
+
         logger.debug("Checking for new emails", {module: `supamail.${this.distributorType}`})
 
         const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)

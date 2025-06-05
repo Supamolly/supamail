@@ -6,22 +6,23 @@ class SupaSender {
      * @param {string} connection.user username/email.
      * @param {string} connection.password user password.
      * @param {string} connection.host mail provider host/ip address.
-     * @param {number} [connection.port=465] mail provider port.
-     * @param {boolean} [connection.tls=true] should tls be used.
+     * @param {number} [connection.port=587] mail provider port.
      * @param {string} [inbox=INBOX] name of the inbox.
      */
     constructor(connection) {
-        const useTls = connection.tls ?? true
-
         this.client = nodemailer.createTransport({
             host: connection.host,
-            port: connection.port ?? 465,
-            secure: useTls,
+            port: connection.port ?? 587,
+            secure: false, // security is provided by starttls
             auth: {
                 user: connection.user,
                 pass: connection.password,
             },
         })
+    }
+
+    async verifyConnection() {
+        await this.client.verify()
     }
 
     /**
