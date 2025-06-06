@@ -104,7 +104,7 @@ class SupaReceiver {
      * Gets message IDs filtered by criteria.
      *
      * @param {[string]} [criteria=["UNSEEN"]] Criteria to filter messages. See https://github.com/mscdex/node-imap a list of possible criteria.
-     * @returns {Promise<number>} Array with message IDs, that match the given criteria.
+     * @returns {Promise<Array<number>>} Array with message IDs, that match the given criteria.
      */
     async getMailIds(criteria = ["UNSEEN"]) {
         await this.connectAndOpenInbox()
