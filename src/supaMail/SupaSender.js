@@ -31,7 +31,13 @@ class SupaSender {
      * @returns {Promise<void>}
      */
     async sendMessage(message) {
-        message.from = `"${message.originalAuthor}" <${message.from}>`
+        message.fromName = message.originalAuthor
+        message.fromAddress = message.from
+        message.from = {
+            name: message.originalAuthor,
+            address: message.from,
+        }
+
         message.date = new Date(Date.now())
 
         if (message.text) {

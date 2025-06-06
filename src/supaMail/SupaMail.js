@@ -34,7 +34,6 @@ class SupaMail {
 
         logger.debug(`Found ${newMessageIds.length}`, {module: `supamail.${this.distributorType}`})
 
-        const sentMessages = []
         for (const id of newMessageIds) {
             try {
                 const message = await this.receiver.fetchMessage(id)
@@ -46,19 +45,14 @@ class SupaMail {
                     continue
                 }
 
-                for (const email of userEmails) {
-                    logger.info(`Sending ${message.subject} to ${email}`, {module: `supamail.${this.distributorType}`})
-                    sentMessages.push(this.sender.sendMessage({...message, to: email, from: this.connectionDetails.user, originalAuthor: originalAuthor.name}))
-                }
+                logger.info(`Sending ${message.subject} to ${userEmails.join(", ")}`, {module: `supamail.${this.distributorType}`})
+                await this.sender.sendMessage({...message, to: "", bcc: userEmails, from: this.connectionDetails.user, originalAuthor: originalAuthor.name})
+
+                logger.info(`Flagging email ${message.subject} as seen`)
+                await this.receiver.addFlags(id, ["Seen"])
             } catch (err) {
                 logger.error(err.message, {module: `supamail.${this.distributorType}`})
             }
-        }
-
-        await Promise.all(sentMessages).catch(err => {logger.error(err.message, {module: `supamail.${this.distributorType}`})})
-
-        for (const id of newMessageIds) {
-            await this.receiver.addFlags(id, ["Seen"])
         }
     }
 }
@@ -86,6 +80,7 @@ module.exports = SupaMail
  * @property {string} fromName Name of the sender.
  * @property {string} fromAddress Address of the sender.
  * @property {[string]} to Mail address(es) of the recipient(s).
+ * @property {[string]} bcc Mail address(es) of recipient(s) which should receive blind carbon copies.
  * @property {number} date Timestamp of the date and time the message was sent.
  * @property {string} subject Subject of the message.
  * @property {string} text Text of the message.
