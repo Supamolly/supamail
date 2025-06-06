@@ -44,7 +44,7 @@ async function run() {
     })
 
     logger.info("Starting SupaMail")
-    const distributors = ["supa", "ton", "licht", "hoerliste", "tech", "it", "test"]
+    const distributors = global.debug ? ["test"] : ["supa", "ton", "licht", "hoerliste", "tech", "it", "test"]
     for (const distributor of distributors) {
         let mailer = null
         try {
