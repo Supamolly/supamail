@@ -43,6 +43,7 @@ class SupaMail {
 
                 if (!isAllowedToSend) {
                     logger.info(`Found message from sender ${message.fromAddress}, who is not in the mailing list`, {module: `supamail.${this.distributorType}`})
+                    await this.receiver.addFlags(id, ["Seen"])
                     continue
                 }
 
