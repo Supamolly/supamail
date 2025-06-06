@@ -6,7 +6,7 @@ const router = express.Router()
 
 function onError(res, msg, debugMsg) {
     const errors = [msg]
-    if (global.debug === true) errors.push(debugMsg)
+    if (globalThis.debug === true) errors.push(debugMsg)
     logger.error(debugMsg, {module: "express.api.distributor"})
 
     res.status(500)

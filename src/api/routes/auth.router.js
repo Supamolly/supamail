@@ -47,7 +47,7 @@ router.post("/register", async(req, res) => {
 
         res.json({success: true, data: {userId: user.id, username: user.name}})
     } catch (err) {
-        const msg = global.debug === true ? err.stack : "Internal Server Error"
+        const msg = globalThis.debug === true ? err.stack : "Internal Server Error"
         logger.error(err.stack, {module: "express.api.auth"})
         res.status(500)
         res.json({success: false, data: {errors: [msg]}})

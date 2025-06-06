@@ -9,8 +9,7 @@ const logger = require("./src/util/logger.js")
 const routes = require("./src/api/routes/index.js")
 const db = require("./src/db/index.js")
 
-global.debug = process.argv.includes("debug")
-
+globalThis.debug = process.argv.includes("debug")
 const app = express()
 app.use(express.json())
 
@@ -44,7 +43,7 @@ async function run() {
     })
 
     logger.info("Starting SupaMail")
-    const distributors = global.debug ? ["test"] : ["supa", "ton", "licht", "hoerliste", "tech", "it", "test"]
+    const distributors = globalThis.debug ? ["test"] : ["supa", "ton", "licht", "hoerliste", "tech", "it", "test"]
     for (const distributor of distributors) {
         let mailer = null
         try {

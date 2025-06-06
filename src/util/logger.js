@@ -7,7 +7,7 @@ const logsDir = process.env.LOGS_DIR || "logs"
 
 function filterLogLevel(level) {
     return winston.format(info => {
-        const showDebug = process.env.ENVIRONMENT?.toLowerCase() !== "production" || process.argv.includes("debug")
+        const showDebug = process.env.ENVIRONMENT?.toLowerCase() !== "production" || globalThis.debug === true
         if (info.level === "debug" && showDebug === false) return false
         return info.level === level ? info : false
     })()
@@ -37,10 +37,12 @@ function createLogTransport(level) {
         createSymlink: true,
         symlinkName: `${level}-latest.log`,
         format: formatLogEntry(level),
+        level: level,
     })
 }
 
 const logger = winston.createLogger({
+    levels: winston.config.syslog.levels,
     format: winston.format.combine(
         winston.format.timestamp({
             format: "YYYY-MM-DD HH:mm:ss",

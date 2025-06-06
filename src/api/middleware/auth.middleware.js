@@ -5,7 +5,7 @@ const logger = require("../../util/logger")
 async function verifyToken(req, res, next) {
     const failVerification = async debugMsg => {
         const errors = ["Verification failed"]
-        if (global.debug === true) errors.push(debugMsg)
+        if (globalThis.debug === true) errors.push(debugMsg)
 
         logger.error(debugMsg, {module: "express.api.middleware.auth"})
         return res.status(403).json({success: false, data: {errors: errors}})
