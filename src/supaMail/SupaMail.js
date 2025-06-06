@@ -55,7 +55,7 @@ class SupaMail {
             }
         }
 
-        await Promise.all(sentMessages)
+        await Promise.all(sentMessages).catch(err => {logger.error(err.message, {module: `supamail.${this.distributorType}`})})
 
         for (const id of newMessageIds) {
             await this.receiver.addFlags(id, ["Seen"])
