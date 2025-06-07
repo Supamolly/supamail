@@ -8,29 +8,36 @@ class SupaMail {
      * @param {"supa"|"ton"|"licht"|"tech"|"hoerliste"|"fusion"} distributorType
      */
     constructor(distributorType) {
-        this.connectionDetails = {
-            host: process.env.MAIL_HOST,
+        this.imapDetails = {
+            host: process.env.IMAP_HOST,
             user: process.env[`${distributorType.toUpperCase()}_EMAIL`],
             password: process.env[`${distributorType.toUpperCase()}_PASSWORD`],
         }
 
-        if (!this.connectionDetails.user || !this.connectionDetails.password) {
+        this.smtpDetails = {
+            host: process.env.SMTP_HOST,
+            user: process.env.SMTP_USER,
+            password: process.env.SMTP_PASSWORD,
+            port: Number.parseInt(process.env.SMTP_PORT),
+        }
+
+        if (!this.imapDetails.user || !this.imapDetails.password) {
             throw new Error("No authentication details available")
         }
 
         this.distributorType = distributorType
-        this.sender = new SupaSender(this.connectionDetails)
-        this.receiver = new SupaReceiver(this.connectionDetails)
+        this.sender = new SupaSender(this.smtpDetails)
+        this.receiver = new SupaReceiver(this.imapDetails)
     }
 
     async runDistributor() {
-        logger.debug("Verifying SMTP Connection")
         logger.debug("Checking for new emails", {module: `supamail.${this.distributorType}`})
 
         const userEmails = (await EmailUser.findAll({attributes: ["email"], where: {[this.distributorType]: 1}, raw: true})).map(user => user.email)
         const newMessageIds = await this.receiver.getMailIds()
 
         if (newMessageIds.length === 0) return
+        logger.debug("Verifying SMTP Connection")
         await this.sender.verifyConnection()
 
         logger.debug(`Found ${newMessageIds.length}`, {module: `supamail.${this.distributorType}`})
@@ -48,7 +55,7 @@ class SupaMail {
                 }
 
                 logger.info(`Sending ${message.subject} to ${userEmails.join(", ")}`, {module: `supamail.${this.distributorType}`})
-                await this.sender.sendMessage({...message, to: "", bcc: userEmails, from: this.connectionDetails.user, originalAuthor: originalAuthor.name})
+                await this.sender.sendMessage({...message, to: "", bcc: userEmails, from: this.imapDetails.user, originalAuthor: originalAuthor.name})
 
                 logger.info(`Flagging email ${message.subject} as seen`)
                 await this.receiver.addFlags(id, ["Seen"])
