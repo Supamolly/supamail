@@ -54,8 +54,9 @@ class SupaMail {
                     continue
                 }
 
+                const from = this.imapDetails.user.replace("@supamolly.de", "@supamail.supamolly.de")
                 logger.info(`Sending ${message.subject} to ${userEmails.join(", ")}`, {module: `supamail.${this.distributorType}`})
-                await this.sender.sendMessage({...message, to: "", bcc: userEmails, from: this.imapDetails.user, originalAuthor: originalAuthor.name})
+                await this.sender.sendMessage({...message, to: "", bcc: userEmails, from: from, originalAuthor: originalAuthor.name})
 
                 logger.info(`Flagging email ${message.subject} as seen`)
                 await this.receiver.addFlags(id, ["Seen"])
