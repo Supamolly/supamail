@@ -54,7 +54,7 @@ class SupaMail {
                     continue
                 }
 
-                const from = this.imapDetails.user.replace("@supamolly.de", process.env.SMTP_DOMAIN)
+                const from = this.imapDetails.user.replace("supamolly.de", process.env.SMTP_DOMAIN)
                 logger.info(`Sending ${message.subject} to ${userEmails.join(", ")}`, {module: `supamail.${this.distributorType}`})
                 await this.sender.sendMessage({...message, to: "", bcc: userEmails, from: from, originalAuthor: originalAuthor.name})
 
