@@ -14,6 +14,7 @@ class SupaSender {
             host: connection.host,
             port: connection.port ?? 587,
             secure: false, // security is provided by starttls
+            ignoreTLS: connection.port === 25,
             auth: {
                 user: connection.user,
                 pass: connection.password,
