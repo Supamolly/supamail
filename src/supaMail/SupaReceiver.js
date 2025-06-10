@@ -81,7 +81,7 @@ class SupaReceiver {
                     simpleParser(buffer, (err, parsed) => {
                         if (err) return reject(err)
                         const message = {
-                            messageId: messageId,
+                            messageId: parsed.messageId,
                             inReplyTo: parsed.inReplyTo,
                             date: Date.parse(parsed.date),
                             subject: parsed.subject,
